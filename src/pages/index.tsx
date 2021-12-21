@@ -1,9 +1,12 @@
 import type { NextPage } from 'next'
 import { ChangeEvent, useState } from 'react'
 import Web3 from 'web3'
+import * as ethers from 'ethers'
+
+import contract from '../../artifacts/contracts/FantomOctopups.sol/FantomOctopups.json'
 
 const Home: NextPage = () => {
-  const [wallet, setWallet] = useState(null)
+  const [wallet, setWallet] = useState(false)
   const [value, setValue] = useState(1)
 
   const handleConnectWallet = () => {
@@ -11,7 +14,7 @@ const Home: NextPage = () => {
       window.web3 = new Web3(window.web3.currentProvider)
       window.ethereum.enable()
 
-      setWallet(window.ethereum.selectedAddress)
+      setWallet(true)
     } else {
       window.alert('Please install Metamask!')
     }
@@ -21,12 +24,39 @@ const Home: NextPage = () => {
     setValue(parseInt(event.target.value))
   }
 
+  const handleMint = async () => {
+    const { ethereum } = window
+    
+    try {
+      const provider = new ethers.providers.Web3Provider(ethereum)
+      const signer = provider.getSigner()
+      const nftContract = new ethers.Contract(
+        process.env.CONTRACT_ADDRESS as string,
+        contract.abi, 
+        signer
+      )
+
+      console.log('Initialize payment')
+      const txn = await nftContract.claim(value, {
+        value: ethers.utils.parseEther((1.5 * value).toString())
+      })
+
+      console.log('Minting... please wait')
+      await txn.wait()
+
+      console.log(txn.hash)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div>
       {wallet ? (
+        // TODO: Add a background
         <div className='h-screen flex items-center flex-col mt-10'>
           <h1 className='mb-4 text-3xl text-center'>Currently were already minted 0 Fantom Octopup</h1>
-          <h2 className='mt-6 mb-4 text-2xl'>{`${value} Octopup = ${value} Fantom`}</h2>
+          <h2 className='mt-6 mb-4 text-2xl'>{`${value} Octopup = ${value * 1.5}`} FTM</h2>
           <input
             className='bg-white focus:outline-none border border-gray-300 rounded-lg py-2 px-4'
             onChange={changeValue}
@@ -36,7 +66,7 @@ const Home: NextPage = () => {
           />
           <button
             className='bg-white focus:outline-none border border-gray-300 rounded-md py-2 px-4 mt-4'
-            type='submit'
+            onClick={handleMint}
           >
             {`Mint ${value} now!`}
           </button>
