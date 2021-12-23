@@ -33,6 +33,8 @@ contract FantomOctopups is ERC721, Ownable {
     depositAddress.transfer(price);
     
     for (uint256 i = 0; i < quantity; i++) {
+      require(_idCounter.current() < maxMintable, "All Octopups have been minted!");
+
       _safeMint(msg.sender, _idCounter.current());
       _idCounter.increment();
     }
