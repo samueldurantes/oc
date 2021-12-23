@@ -10,7 +10,7 @@ contract FantomOctopups is ERC721, Ownable {
 
   Counters.Counter private _idCounter;
 
-  address payable public depositAddress = payable(0xf778fF2Cd70bdB0346b080df378EF32bEe648D49);
+  address payable public depositAddress = payable(0x7dB8DB19E68fDEE902169471Bc465CefAFB45702);
   uint256 public maxMintable = 100;
 
   constructor() ERC721("FantomOctopups", "OCTO") {}
@@ -21,6 +21,19 @@ contract FantomOctopups is ERC721, Ownable {
 
   function setDepositAddress(address payable to) public onlyOwner {
     depositAddress = to;
+  }
+
+  function reserve(uint256 quantity) public onlyOwner {
+    uint256 id = _idCounter.current();
+
+    require(id < maxMintable, "All Octopups have been minted!");
+
+    for (uint256 i = 0; i < quantity; i++) {
+      require(_idCounter.current() < maxMintable, "All Octopups have been minted!");
+
+      _safeMint(msg.sender, _idCounter.current());
+      _idCounter.increment();
+    }
   }
 
   function claim(uint256 quantity) public payable {
