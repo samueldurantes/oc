@@ -1,23 +1,21 @@
 import type { NextPage } from 'next'
 import { ChangeEvent, useState } from 'react'
-import Web3 from 'web3'
 import * as ethers from 'ethers'
 
 import contract from '../../artifacts/contracts/FantomOctopups.sol/FantomOctopups.json'
 
 const Home: NextPage = () => {
-  const [wallet, setWallet] = useState(false)
+  const [provider, setProvider] = useState<ethers.ethers.providers.Web3Provider | undefined>(undefined)
   const [value, setValue] = useState(1)
 
-  const handleConnectWallet = () => {
-    if (window.web3) {
-      window.web3 = new Web3(window.web3.currentProvider)
-      window.ethereum.enable()
-
-      setWallet(true)
-    } else {
+  const handleConnectWallet = async () => {
+    if (!window.ethereum) {
       window.alert('Please install Metamask!')
+      return
     }
+
+    await window.ethereum.request({ method: 'eth_requestAccounts' })
+    setProvider(new ethers.providers.Web3Provider(window.ethereum))
   }
 
   const changeValue = (event: ChangeEvent<HTMLInputElement>) => {
@@ -25,19 +23,16 @@ const Home: NextPage = () => {
   }
 
   const handleMint = async () => {
-    const { ethereum } = window
-    
     try {
-      const provider = new ethers.providers.Web3Provider(ethereum)
-      const signer = provider.getSigner()
-      const nftContract = new ethers.Contract(
+      const signer = provider?.getSigner()
+      const Contract = new ethers.Contract(
         process.env.CONTRACT_ADDRESS as string,
         contract.abi, 
         signer
       )
 
       console.log('Initialize payment')
-      const txn = await nftContract.claim(value, {
+      const txn = await Contract.claim(value, {
         value: ethers.utils.parseEther((1.5 * value).toString())
       })
 
@@ -52,7 +47,7 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      {wallet ? (
+      {provider ? (
         // TODO: Add a background
         <div className='h-screen flex items-center flex-col mt-10'>
           <h1 className='mb-4 text-3xl text-center'>Currently were already minted 0 Fantom Octopup</h1>
