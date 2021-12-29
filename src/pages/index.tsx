@@ -16,7 +16,7 @@ const Home: NextPage = () => {
       return
     }
 
-    if (window.ethereum.networkVersion != 4002) {
+    if (window.ethereum.networkVersion != 250) {
       window.alert('Please connect to Fantom Opera Network')
       return
     }
