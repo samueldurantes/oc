@@ -8,7 +8,7 @@ import _contract from '../../../../artifacts/contracts/FantomOctopups.sol/Fantom
 
 const {
   NETWORK_RPC,
-  CONTRACT_ADDRESS,
+  NEXT_PUBLIC_CONTRACT_ADDRESS: CONTRACT_ADDRESS,
   METADATA_URL
 } = process.env
 
