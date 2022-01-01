@@ -52,7 +52,7 @@ const Home: NextPage = () => {
   }, [provider])
 
   const changeValue = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue(parseInt(event.target.value))
+    setValue(Math.max(1, +event.target.value))
   }
 
   const handleMint = async () => {
