@@ -18,7 +18,7 @@ const Home: NextPage = () => {
       return
     }
 
-    if (window.ethereum.networkVersion != 250) {
+    if (window.ethereum.networkVersion != 4002) {
       window.alert('Please connect to Fantom Opera Network')
       return
     }
@@ -54,9 +54,9 @@ const Home: NextPage = () => {
         Contract.abi, 
         provider?.getSigner()
       )
-
+      
       getUserTokens()
-      getTotalSupply()
+      setInterval(() => getTotalSupply(), 1000)
     }
   }, [provider])
 
@@ -71,8 +71,7 @@ const Home: NextPage = () => {
       })
         .then((receipt: any) => {
           console.log(receipt)
-          
-          getTotalSupply()
+
           getUserTokens()
 
           resolve(receipt)
