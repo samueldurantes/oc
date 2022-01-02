@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import { ChangeEvent, useState, useRef, useEffect } from 'react'
 import * as ethers from 'ethers'
+import { toast } from 'react-toastify'
 
 import Contract from '../../artifacts/contracts/FantomOctopups.sol/FantomOctopups.json'
 
@@ -8,6 +9,7 @@ const Home: NextPage = () => {
   const [provider, setProvider] = useState<ethers.ethers.providers.Web3Provider | undefined>(undefined)
   const [value, setValue] = useState(1)
   const [userTokens, setUserTokens] = useState<string[]>([])
+  const [supply, setSupply] = useState(0)
   const contract = useRef<ethers.ethers.Contract>()
 
   const handleConnectWallet = async () => {
@@ -39,6 +41,12 @@ const Home: NextPage = () => {
     setUserTokens(tokens)
   }
 
+  const getTotalSupply = async () => {
+    const totalSupply = await contract.current?.totalSupply()
+
+    setSupply(totalSupply)
+  }
+
   useEffect(() => {
     if (provider) {
       contract.current = new ethers.Contract(
@@ -48,28 +56,42 @@ const Home: NextPage = () => {
       )
 
       getUserTokens()
+      getTotalSupply()
     }
   }, [provider])
 
   const changeValue = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue(parseInt(event.target.value))
+    setValue(Math.max(1, +event.target.value))
   }
 
   const handleMint = async () => {
-    try {
-      console.log('Initialize payment')
-      const txn = await contract.current?.claim(value, {
+    const claimPromise = new Promise((resolve, reject) => {
+      contract.current?.claim(value, {
         value: ethers.utils.parseEther((1.5 * value).toString())
       })
+        .then((receipt: any) => {
+          console.log(receipt)
+          
+          getTotalSupply()
+          getUserTokens()
 
-      console.log('Minting... please wait')
-      await txn.wait()
+          resolve(receipt)
+        })
+        .catch((error: any) => {
+          console.log(error)
+          reject(error)
+        })
+    })
 
-      console.log(txn.hash)
-      getUserTokens() // reload preview images
-    } catch (error) {
-      console.log(error)
-    }
+    toast.promise(claimPromise, {
+      pending: 'Minting... please wait',
+      success: {
+        render: (_) => 'Claimed!'
+      },
+      error: {
+        render: (_) => 'Something went wrong... Try again!'
+      }
+    })
   }
 
   return (
@@ -77,7 +99,7 @@ const Home: NextPage = () => {
       {provider ? (
         // TODO: Add a background
         <div className='h-screen flex items-center flex-col mt-10'>
-          <h1 className='mb-4 text-3xl text-center'>Currently were already minted 0 Fantom Octopup</h1>
+          <h1 className='mb-4 text-3xl text-center'>Currently has {100 - supply} Octopups to mint</h1>
           <h2 className='mt-6 mb-4 text-2xl'>{`${value} Octopup = ${value * 1.5}`} FTM</h2>
           <input
             className='bg-white focus:outline-none border border-gray-300 rounded-lg py-2 px-4'

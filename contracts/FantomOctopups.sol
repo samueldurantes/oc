@@ -17,7 +17,7 @@ contract FantomOctopups is ERC721, ERC721Enumerable, Ownable {
   constructor() ERC721("FantomOctopups", "OCTO") {}
 
   function _baseURI() internal pure override returns (string memory) {
-    return "";
+    return "https://fantomoctopups.com/api/octopup/";
   }
 
   function setDepositAddress(address payable to) public onlyOwner {
