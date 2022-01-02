@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import { ChangeEvent, useState, useRef, useEffect } from 'react'
 import * as ethers from 'ethers'
+import { toast } from 'react-toastify'
 
 import Contract from '../../artifacts/contracts/FantomOctopups.sol/FantomOctopups.json'
 
@@ -64,20 +65,33 @@ const Home: NextPage = () => {
   }
 
   const handleMint = async () => {
-    try {
-      console.log('Initialize payment')
-      const txn = await contract.current?.claim(value, {
+    const claimPromise = new Promise((resolve, reject) => {
+      contract.current?.claim(value, {
         value: ethers.utils.parseEther((1.5 * value).toString())
       })
+        .then((receipt: any) => {
+          console.log(receipt)
+          
+          getTotalSupply()
+          getUserTokens()
 
-      console.log('Minting... please wait')
-      await txn.wait()
+          resolve(receipt)
+        })
+        .catch((error: any) => {
+          console.log(error)
+          reject(error)
+        })
+    })
 
-      console.log(txn.hash)
-      getUserTokens() // reload preview images
-    } catch (error) {
-      console.log(error)
-    }
+    toast.promise(claimPromise, {
+      pending: 'Minting... please wait',
+      success: {
+        render: (_) => 'Claimed!'
+      },
+      error: {
+        render: (_) => 'Something went wrong... Try again!'
+      }
+    })
   }
 
   return (
