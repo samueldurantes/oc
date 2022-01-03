@@ -9,7 +9,7 @@ module.exports = {
       chainId: 1337,
       forking: {
         url: 'https://rpc.ftm.tools/',
-        blockNumber: 24066833,
+        blockNumber: 24066833
       }
     },
     testnet: {

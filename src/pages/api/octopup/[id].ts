@@ -12,7 +12,7 @@ const {
   METADATA_URL
 } = process.env
 
-const provider = new ethers.providers.JsonRpcProvider(NETWORK_RPC);
+const provider = new ethers.providers.JsonRpcProvider(NETWORK_RPC)
 const contract = new ethers.Contract(
   CONTRACT_ADDRESS as string,
   _contract.abi,
@@ -24,7 +24,7 @@ interface Data {
   name: string
   image: string
   description: string
-  attributes: Array<{ trait_type: string, value: string }>
+  attributes: Array<{ trait_type: string; value: string }>
 }
 
 interface Error {
@@ -33,14 +33,10 @@ interface Error {
 
 // Initializing the cors middleware
 const cors = Cors({
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'OPTIONS']
 })
 
-function runMiddleware(
-  request: any,
-  response: any,
-  fn: any
-) {
+function runMiddleware(request: any, response: any, fn: any) {
   return new Promise((resolve, reject) => {
     fn(request, response, (result: any) => {
       if (result instanceof Error) {
@@ -52,7 +48,7 @@ function runMiddleware(
   })
 }
 
-export default async function handler (
+export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse<Data | Error>
 ) {
@@ -61,8 +57,9 @@ export default async function handler (
 
   try {
     console.log(await contract.ownerOf(id))
-    const metadata = await fetch(`${METADATA_URL}/${id}.json`)
-      .then((response) => response.json())
+    const metadata = await fetch(`${METADATA_URL}/${id}.json`).then(
+      (response) => response.json()
+    )
 
     return response.status(200).json(metadata)
   } catch (_) {

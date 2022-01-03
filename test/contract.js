@@ -5,7 +5,7 @@ describe('Fantom Octopups contract', function () {
   let depositAddress
 
   this.beforeAll(async () => {
-    [owner, depositAddress, random] = await ethers.getSigners()
+    ;[owner, depositAddress, random] = await ethers.getSigners()
   })
 
   it('should minted a octopup', async function () {
@@ -18,9 +18,11 @@ describe('Fantom Octopups contract', function () {
     await contract
       .connect(random)
       .claim(1, { value: ethers.utils.parseEther('1.5') })
-        .catch((error) => console.log(error.message))
+      .catch((error) => console.log(error.message))
 
-    expect(await depositAddress.getBalance()).to.equal(initialBalance.add(ethers.utils.parseEther('1.5')))
+    expect(await depositAddress.getBalance()).to.equal(
+      initialBalance.add(ethers.utils.parseEther('1.5'))
+    )
   })
 
   it('should not be minted because invalid amount', async function () {
@@ -30,9 +32,11 @@ describe('Fantom Octopups contract', function () {
     const receipt = await contract
       .connect(random)
       .claim(1, { value: ethers.utils.parseEther('1') })
-        .catch((error) => error.message)
+      .catch((error) => error.message)
 
-    expect(receipt).to.equal(`VM Exception while processing transaction: reverted with reason string 'Invalid amount!'`)
+    expect(receipt).to.equal(
+      `VM Exception while processing transaction: reverted with reason string 'Invalid amount!'`
+    )
   })
 
   it('should not reserve octopups', async function () {
@@ -42,8 +46,10 @@ describe('Fantom Octopups contract', function () {
     const receipt = await contract
       .connect(random)
       .reserve(10)
-        .catch((error) => error.message)
+      .catch((error) => error.message)
 
-    expect(receipt).to.equal(`VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'`)
+    expect(receipt).to.equal(
+      `VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'`
+    )
   })
 })
