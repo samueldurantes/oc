@@ -7,6 +7,9 @@ import { toast } from 'react-toastify'
 
 import Contract from '../../artifacts/contracts/FantomOctopups.sol/FantomOctopups.json'
 
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string
+const NETWORK_CHAINID = process.env.NEXT_PUBLIC_NETWORK_CHAINID as string
+
 const Home: NextPage = () => {
   const [provider, setProvider] = useState<ethers.ethers.providers.Web3Provider | undefined>(undefined)
   const [value, setValue] = useState(1)
@@ -20,7 +23,7 @@ const Home: NextPage = () => {
       return
     }
 
-    if (window.ethereum.networkVersion != 4002) {
+    if (window.ethereum.networkVersion != NETWORK_CHAINID) {
       window.alert('Please connect to Fantom Opera Network')
       return
     }
@@ -52,7 +55,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (provider) {
       contract.current = new ethers.Contract(
-        process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string,
+        CONTRACT_ADDRESS,
         Contract.abi, 
         provider?.getSigner()
       )
