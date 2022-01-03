@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 import type { NextPage } from 'next'
 import { ChangeEvent, useState, useRef, useEffect } from 'react'
 import * as ethers from 'ethers'
@@ -96,9 +98,8 @@ const Home: NextPage = () => {
   return (
     <div>
       {provider ? (
-        // TODO: Add a background
-        <div className='h-screen flex items-center flex-col mt-10'>
-          <h1 className='mb-4 text-3xl text-center'>Currently has {100 - supply} Octopups to mint</h1>
+        <div className='h-screen flex items-center flex-col'>
+          <h1 className='mb-4 text-3xl text-center mt-10'>Currently has {100 - supply} Octopups to mint</h1>
           <h2 className='mt-6 mb-4 text-2xl'>{`${value} Octopup = ${value * 1.5}`} FTM</h2>
           <input
             className='bg-white focus:outline-none border border-gray-300 rounded-lg py-2 px-4'
@@ -126,8 +127,14 @@ const Home: NextPage = () => {
           </div>
         </div>
       ) : (
-        // TODO: Add a introduction
         <div className='h-screen flex items-center justify-center flex-col'>
+          <img className= 'w-96 h-96 mb-5' src='/octo.gif' alt='Octopups gif' />
+          <h1 className='font-bold text-3xl text-center'>Welcome to Fantom Octopups 🐙</h1>
+          <p className='mt-6 md:w-1/3 text-center'>
+            Fantom Octopups is a NFT collection created on Fantom Network. 
+            Are 100 Octopups randomly generated, each Octopup is unique and costs 1.5 FTM.
+            Join our <a className='text-blue-400 underline' href='https://discord.gg/N5sD6J5J8D'>discord server!</a>
+          </p>
           <button
             className='mt-9 font-semibold leading-none text-white py-4 px-10 bg-blue-700 rounded hover:bg-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 focus:outline-none'
             onClick={handleConnectWallet}
@@ -154,8 +161,7 @@ function LoadImage ({ src }: { src: string }) {
   })
 
   if (!image) return <></>
-  
-  // eslint-disable-next-line @next/next/no-img-element
+
   return <img className='h-64 w-64 pb-4 md:pr-4' key={image} src={image} alt={image} />
 }
 
