@@ -59,9 +59,11 @@ const Home: NextPage = () => {
         Contract.abi, 
         provider?.getSigner()
       )
-      
-      getUserTokens()
-      setInterval(() => getTotalSupply(), 1000)
+
+      setTimeout(() => {
+        getTotalSupply()
+        getUserTokens()
+      }, 10000)
     }
   }, [provider])
 
@@ -76,8 +78,6 @@ const Home: NextPage = () => {
       })
         .then((receipt: any) => {
           console.log(receipt)
-
-          getUserTokens()
 
           resolve(receipt)
         })
@@ -165,7 +165,7 @@ function LoadImage ({ src }: { src: string }) {
 
   if (!image) return <></>
 
-  return <img className='h-64 w-64 pb-4 md:pr-4' key={image} src={image} alt={image} />
+  return <img className='h-64 w-64 pb-4 md:pr-4' key={image} src={image} alt={src} />
 }
 
 export default Home
