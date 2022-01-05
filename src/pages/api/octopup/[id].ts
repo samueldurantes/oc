@@ -61,10 +61,16 @@ export default async function handler (
 
   try {
     console.log(await contract.ownerOf(id))
-    const metadata = await fetch(`${METADATA_URL}/${id}.json`)
-      .then((response) => response.json())
+    const { id: _id, name, image, description, attributes } = await fetch(`${METADATA_URL}/${id}.json`)
+      .then((response) => response.json()) as Data
 
-    return response.status(200).json(metadata)
+    return response.status(200).json({
+      id: _id,
+      name,
+      image: `ipfs://${image}`,
+      description,
+      attributes
+    })
   } catch (_) {
     return response.status(404).json({ message: 'Not found' })
   }
