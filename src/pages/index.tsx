@@ -61,10 +61,12 @@ const Home: NextPage = () => {
         provider?.getSigner()
       )
 
-      setTimeout(() => {
+      setTimeout(function nested () {
         getTotalSupply()
         getUserTokens()
-      }, 10000)
+
+        setTimeout(nested, 10000)
+      })
     }
   }, [provider])
 
