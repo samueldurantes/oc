@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import { ChangeEvent, useState, useRef, useEffect } from 'react'
 import * as ethers from 'ethers'
 import { toast } from 'react-toastify'
@@ -100,6 +101,10 @@ const Home: NextPage = () => {
 
   return (
     <div>
+      <Head>
+        <title>Fantom Octopups</title>
+      </Head>
+
       {provider ? (
         <div className='h-screen flex items-center flex-col'>
           <h1 className='mb-4 text-3xl text-center mt-10'>Currently has {100 - supply} Octopups to mint</h1>
