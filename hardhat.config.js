@@ -8,9 +8,13 @@ module.exports = {
     hardhat: {
       chainId: 1337,
       forking: {
-        url: 'https://rpc.ftm.tools/',
+        url: process.env.NETWORK_RPC,
         blockNumber: 24066833,
       }
+    },
+    mainnet: {
+      url: 'https://rpc.ftm.tools/',
+      accounts: [`0x${process.env.PRIVATE_KEY}`]
     },
     testnet: {
       url: 'https://rpc.testnet.fantom.network/',
