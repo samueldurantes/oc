@@ -33,7 +33,7 @@ interface Error {
 
 // Initializing the cors middleware
 const cors = Cors({
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'OPTIONS', 'HEAD'],
 })
 
 function runMiddleware(
